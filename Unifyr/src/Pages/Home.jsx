@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useSpring, animated, config } from 'react-spring';
+import Navbar from '../Components/Navbar';
+import Logo from '../assets/Logo.png'
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,71 +30,26 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       {/* Navbar */}
-      <animated.nav style={slideDown} className="bg-white shadow-md fixed w-full top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            {/* Logo / Brand */}
-            <div className="flex-shrink-0">
-              <a href="#" className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-colors duration-300">
-                MyCompany
-              </a>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="hidden md:flex space-x-8">
-              <NavLink href="#" text="Home" />
-              <NavLink href="#" text="About Us" />
-              <NavLink href="#" text="Contact" />
-            </div>
-
-            {/* Auth Buttons */}
-            <div className="hidden md:flex space-x-4">
-              <AnimatedButton primary>Log In</AnimatedButton>
-              <AnimatedButton>Sign Up</AnimatedButton>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-gray-600 hover:text-indigo-600 focus:outline-none focus:text-indigo-600"
-              >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Home</a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">About Us</a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Contact</a>
-            </div>
-            <div className="pt-4 pb-3 border-t border-gray-200">
-              <div className="flex items-center px-5">
-                <AnimatedButton primary fullWidth>Log In</AnimatedButton>
-              </div>
-              <div className="mt-3 px-2 space-y-1">
-                <AnimatedButton fullWidth>Sign Up</AnimatedButton>
-              </div>
-            </div>
-          </div>
-        )}
-      </animated.nav>
-
+      <Navbar/>
       {/* Main Content */}
       <main className="pt-20">
         {/* Hero Section */}
         <animated.section style={fadeIn} className="bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <animated.h1 style={staggeredFadeIn(200)} className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-6">
-              Welcome to MyCompany
+          <div className="flex items-center mb-6 mx-auto justify-center">
+            <animated.h1
+              style={staggeredFadeIn(200)}
+              className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600"
+            >
+              Welcome to
             </animated.h1>
+            <animated.h1
+             style={staggeredFadeIn(200)}
+            >
+            <img src={Logo} alt="img" className="w-40 object-scale-down ml-2" />
+            </animated.h1>
+          </div>
+
             <animated.p style={staggeredFadeIn(400)} className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
               We provide top-notch solutions for all your business needs. Join us to experience the best services.
             </animated.p>
@@ -126,7 +83,7 @@ const Home = () => {
               />
               <AboutCard
                 title="Our Values"
-                description="Integrity, innovation, and excellence are at the core of everything we do."
+                description="Integrity,loremjfjoa fadf ad badbb un faisb bfasfabnf abf aisbf asbfasfbaf asfbas fabsfas bfaos dfbas fasb fbasa dfb adsb fidsf baib faebwfeb fabfba dfb innovation, and excellence are at the core of everything we do."
                 delay={600}
               />
             </div>
