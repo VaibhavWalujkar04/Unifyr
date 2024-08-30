@@ -18,7 +18,7 @@ class VectorGenerator:
         outputs = self.bert_model(**inputs)
         return outputs.last_hidden_state.mean(dim=1).detach().numpy()
 
-    def generate_combined_vector(self, tfidf_vector, berpt_embedding):
+    def generate_combined_vector(self, tfidf_vector, bert_embedding):
         return np.concatenate((tfidf_vector, bert_embedding), axis=1)
 
 # Usage
