@@ -2,6 +2,7 @@ import React from "react";
 import AuthPage from "./Pages/AuthPage";
 import Home from "./Pages/Home";
 import GetStartedCandidate from "./Pages/GetStartedCandidate";
+import GetStartedExpert from "./Pages/GetStartedExpert";
 import Profile from "./Pages/Profile";
 import ExpertDashboard from "./Pages/ExpertDashboard";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
