@@ -11,7 +11,7 @@ const App = () => {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<Profile />} />
+          <Route path="/" element={<Home />} />
           <Route path="/getstartedcandidate" element={<GetStartedCandidate />} />
           <Route path="/auth/login" element={<AuthPage initialLogin={true} />} />
           <Route path="/auth/signin" element={<AuthPage initialLogin={false}  />} />
@@ -20,6 +20,5 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
 
