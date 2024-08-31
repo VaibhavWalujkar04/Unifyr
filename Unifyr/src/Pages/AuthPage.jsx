@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { useAuthContext } from "../hooks/useAuthContext";
+import { useSignup } from "../hooks/useSignup";
+import { useLogin } from "../hooks/useLogin";
 const roles = ["Expert", "Candidate"];
 
 const AuthPage = ({ initialLogin = true }) => {
   const [activeRole, setActiveRole] = useState("Expert");
   const [isLogin, setIsLogin] = useState(initialLogin);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [username,setUsername] = useState("");
+  const {signup} = useSignup();
+  const {login} = useLogin();
+  const handleSubmit = async (e)=>{
+    e.preventDefault();
+    isLogin? await login(email,password):
+    await signup(username,email,password,activeRole);
+  }
 
   useEffect(() => {
     setIsLogin(initialLogin);
@@ -18,6 +30,7 @@ const AuthPage = ({ initialLogin = true }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
+      onSubmit={handleSubmit}
     >
       <motion.div
         className="space-y-4"
@@ -25,12 +38,24 @@ const AuthPage = ({ initialLogin = true }) => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
+        {!isLogin && ( // Show username field only when signing up
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+            <input
+              type="text"
+              className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+              required
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+        )}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
           <input
             type="email"
             className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
             required
+            onChange={(e)=>setEmail(e.target.value)}
           />
         </div>
         <div>
@@ -39,6 +64,7 @@ const AuthPage = ({ initialLogin = true }) => {
             type="password"
             className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
             required
+            onChange={(e)=>setPassword(e.target.value)}
           />
         </div>
         <AnimatePresence>
@@ -99,7 +125,7 @@ const AuthPage = ({ initialLogin = true }) => {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500 p-8">
+    <div className="min-h-screen mt-20 flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500 p-8">
       <motion.div
         className="max-w-md w-full bg-white p-12 rounded-xl shadow-lg space-y-8"
         initial={{ opacity: 0, scale: 0.9 }}

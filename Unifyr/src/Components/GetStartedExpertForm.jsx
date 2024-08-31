@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { FaUser, FaGraduationCap, FaBriefcase } from 'react-icons/fa';
 
-const GetStartedCandidateForm = () => {
+const GetStartedExpertForm = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [formData, setFormData] = useState({});
-  const [certificationsFile, setCertificationsFile] = useState(null);
+  const [resumeFile, setResumeFile] = useState(null);
 
   const fadeInScale = useSpring({
     opacity: 1,
@@ -16,72 +16,112 @@ const GetStartedCandidateForm = () => {
 
   const pages = [
     {
-      title: "Personal and Contact Information",
+      title: "Professional Information",
       icon: FaUser,
-      description: "Please provide your personal and contact details.",
+      description: "Please provide your professional details.",
       fields: [
         { label: "Full Name", name: "fullName", type: "text" },
         { label: "Email Address", name: "emailAddress", type: "email" },
         { label: "Contact Number", name: "contactNumber", type: "text" },
         {
-          label: "Position Applied For",
-          name: "positionAppliedFor",
+          label: "Designation/Current Position",
+          name: "designation",
           type: "dropdown",
-          options: ["Research Scientist", "Software Engineer", "Mechanical Designer", "Others"]
+          options: ["Senior Scientist", "Principal Engineer", "Research Director"]
         },
         {
-          label: "Current Employment Status",
-          name: "employmentStatus",
+          label: "Department/Division",
+          name: "department",
           type: "dropdown",
-          options: ["Employed", "Unemployed", "Student", "Self-employed"]
+          options: ["Electronics", "Cybersecurity", "Mechanical Engineering", "Data Science"]
         },
-        { label: "LinkedIn Profile (Optional)", name: "linkedInProfile", type: "text" }
+        {
+          label: "Years of Experience in Current Role",
+          name: "yearsOfExperience",
+          type: "dropdown",
+          options: ["1-3 years", "4-7 years", "8+ years"]
+        },
+        {
+          label: "Upload Resume",
+          name: "resumeUpload",
+          type: "file"
+        }
       ]
     },
     {
-      title: "Educational Background & Technical Skills",
+      title: "Technical Expertise and Experience",
       icon: FaGraduationCap,
-      description: "Provide details of your educational background and technical skills.",
+      description: "Select your core areas of expertise and technical skills.",
       fields: [
         {
-          label: "Highest Degree Attained",
-          name: "highestDegree",
-          type: "dropdown",
-          options: ["Bachelor's Degree", "Master's Degree", "PhD", "Diploma", "Others"]
-        },
-        { label: "Field of Study", name: "fieldOfStudy", type: "text" },
-        { label: "University/Institution", name: "universityInstitution", type: "text" },
-        {
-          label: "Technical Skills",
-          name: "technicalSkills",
+          label: "Core Areas of Expertise",
+          name: "coreAreasOfExpertise",
           type: "checkbox",
           options: [
-            "Programming Languages (e.g., Python, C++, Java)",
-            "CAD Tools (e.g., SolidWorks, AutoCAD)",
-            "Data Analysis (e.g., R, MATLAB)",
-            "Cybersecurity Tools (e.g., Wireshark, Metasploit)",
+            "Electronics Engineering",
+            "Cybersecurity",
+            "Mechanical Design",
+            "Data Science and AI",
+            "Software Development",
+            "Robotics",
             "Others"
           ]
         },
         {
-          label: "Certifications (Upload if any)",
-          name: "certifications",
-          type: "file"
+          label: "Technical Skills Proficiency",
+          name: "technicalSkillsProficiency",
+          type: "checkbox",
+          options: [
+            "Python",
+            "MATLAB",
+            "CAD Software",
+            "Embedded Systems",
+            "Machine Learning",
+            "Data Analysis Tools",
+            "Cybersecurity Protocols",
+            "Others"
+          ]
         },
         {
-          label: "Notable Academic Projects/Research Work",
-          name: "academicProjects",
+          label: "Relevant Certifications",
+          name: "relevantCertifications",
+          type: "text"
+        },
+        {
+          label: "Interview Experience",
+          name: "interviewExperience",
+          type: "radio",
+          options: ["Yes", "No"]
+        },
+        {
+          label: "If Yes, in what capacity?",
+          name: "interviewCapacity",
+          type: "text"
+        },
+        {
+          label: "Publications and Research Contributions",
+          name: "publications",
           type: "textarea"
         }
       ]
     },
     {
-      title: "Professional Experience & Preferences",
+      title: "Availability & Preferences",
       icon: FaBriefcase,
-      description: "Provide details of your professional experience and interview preferences.",
+      description: "Provide your availability and preferences for conducting interviews.",
       fields: [
-        { label: "Work Experience", name: "workExperience", type: "textarea" },
-        { label: "Key Achievements", name: "keyAchievements", type: "textarea" },
+        {
+          label: "Preferred Time Slots for Conducting Interviews",
+          name: "preferredTimeSlots",
+          type: "dropdown",
+          options: ["Morning (9 AM - 12 PM)", "Afternoon (1 PM - 4 PM)", "Evening (5 PM - 8 PM)"]
+        },
+        {
+          label: "Preferred Interview Format",
+          name: "preferredInterviewFormat",
+          type: "radio",
+          options: ["Technical Round", "HR Round", "Coding/Practical Round", "Panel Discussion"]
+        },
         {
           label: "Preferred Interview Mode",
           name: "preferredInterviewMode",
@@ -89,12 +129,10 @@ const GetStartedCandidateForm = () => {
           options: ["Online", "In-person", "Hybrid"]
         },
         {
-          label: "Preferred Interview Time",
-          name: "preferredInterviewTime",
-          type: "dropdown",
-          options: ["Morning (9 AM - 12 PM)", "Afternoon (1 PM - 4 PM)", "Evening (5 PM - 8 PM)"]
-        },
-        { label: "Additional Information", name: "additionalInformation", type: "textarea" }
+          label: "Additional Notes/Preferences",
+          name: "additionalNotes",
+          type: "textarea"
+        }
       ]
     }
   ];
@@ -108,12 +146,12 @@ const GetStartedCandidateForm = () => {
   };
 
   const handleFileUpload = (e) => {
-    setCertificationsFile(e.target.files[0]);
+    setResumeFile(e.target.files[0]);
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData, certificationsFile);
+    console.log('Form submitted:', formData, resumeFile);
   };
 
   const nextPage = () => {
@@ -237,26 +275,25 @@ const GetStartedCandidateForm = () => {
               className="border-2 border-dashed border-indigo-300 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-500 transition-colors duration-300"
               onDrop={(e) => {
                 e.preventDefault();
-                setCertificationsFile(e.dataTransfer.files[0]);
+                handleFileUpload(e);
               }}
               onDragOver={(e) => e.preventDefault()}
             >
+              <p className="text-indigo-600">
+                Drag & drop your resume here, or click to select a file
+              </p>
               <input
+                className="hidden"
                 type="file"
                 name={field.name}
                 onChange={handleFileUpload}
-                className="hidden"
               />
-              {certificationsFile ? (
-                <p className="text-sm text-gray-600">
-                  {certificationsFile.name}
-                </p>
-              ) : (
-                <p className="text-sm text-indigo-600">
-                  Drag and drop a file here or click to select
-                </p>
-              )}
             </div>
+            {resumeFile && (
+              <p className="mt-2 text-green-600">
+                Uploaded: {resumeFile.name}
+              </p>
+            )}
           </div>
         );
       default:
@@ -265,68 +302,59 @@ const GetStartedCandidateForm = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-24">
-      <form
-        onSubmit={handleFormSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 border-2 border-indigo-200"
-      >
-        <div className="flex justify-center mb-8">
-          {pages.map((page, index) => (
-            <div
-              key={index}
-              className={`text-center cursor-pointer px-4 ${
-                currentPage === index
-                  ? "text-indigo-600 font-bold"
-                  : "text-indigo-400"
-              }`}
-              onClick={() => jumpToPage(index)}
-            >
-              <page.icon className="mx-auto text-2xl" />
-              <span>{page.title}</span>
-            </div>
-          ))}
-        </div>
-
+    <div className="max-w-xl mx-auto p-8 bg-white rounded-lg shadow-md mt-20 border-2 border-indigo-100">
+      <h2 className="text-2xl font-semibold mb-4 flex items-center text-indigo-700">
+        {React.createElement(pages[currentPage].icon, { className: 'mr-2 text-indigo-600' })}
+        {pages[currentPage].title}
+      </h2>
+      <p className="mb-6 text-indigo-600">
+        {pages[currentPage].description}
+      </p>
+      <form onSubmit={handleFormSubmit}>
         <animated.div style={fadeInScale}>
-          <h2 className="text-xl font-semibold text-indigo-700 mb-4 text-center">
-            {pages[currentPage].title}
-          </h2>
-          <p className="text-gray-600 mb-8 text-center">
-            {pages[currentPage].description}
-          </p>
           {pages[currentPage].fields.map((field) => renderField(field))}
         </animated.div>
-
-        <div className="flex justify-between mt-8">
-          {currentPage > 0 && (
-            <button
-              type="button"
-              onClick={prevPage}
-              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Previous
-            </button>
-          )}
+        <div className="flex justify-between mt-6">
+          <button
+            type="button"
+            onClick={prevPage}
+            className={`bg-gray-300 text-indigo-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors duration-300 ${currentPage === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={currentPage === 0}
+          >
+            Previous
+          </button>
           {currentPage < pages.length - 1 ? (
             <button
               type="button"
               onClick={nextPage}
-              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-auto"
+              className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition-colors duration-300"
             >
               Next
             </button>
           ) : (
             <button
               type="submit"
-              className="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-auto"
+              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors duration-300"
             >
               Submit
             </button>
           )}
+        </div>
+        <div className="flex justify-center mt-4">
+          {pages.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => jumpToPage(index)}
+              className={`w-4 h-4 mx-1 rounded-full transition-colors duration-300 ${
+                currentPage === index ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-indigo-400'
+              }`}
+            />
+          ))}
         </div>
       </form>
     </div>
   );
 };
 
-export default GetStartedCandidateForm;
+export default GetStartedExpertForm;
