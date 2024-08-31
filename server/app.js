@@ -20,9 +20,9 @@ const candidateRoutes = require('./routes/candidateRoutes');
 const expertRoutes = require('./routes/expertRoutes');
 
 // Use routes
-app.use('/api/auth', authRoutes);
-app.use('/api/candidates', candidateRoutes);
-app.use('/api/experts', expertRoutes);
+app.use('/auth', authRoutes);
+app.use('/candidates', candidateRoutes);
+app.use('/experts', expertRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })

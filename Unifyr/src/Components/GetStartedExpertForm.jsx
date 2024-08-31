@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useSpring, animated } from 'react-spring';
-import { FaUser, FaGraduationCap, FaBriefcase, FaHeart, FaInfoCircle, FaFileAlt } from 'react-icons/fa';
+import { FaUser, FaGraduationCap, FaBriefcase } from 'react-icons/fa';
 
 const GetStartedExpertForm = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [formData, setFormData] = useState({});
+  const [resumeFile, setResumeFile] = useState(null);
 
   const fadeInScale = useSpring({
     opacity: 1,
@@ -14,98 +15,125 @@ const GetStartedExpertForm = () => {
   });
 
   const pages = [
-    { 
-      title: "Personal Information", 
-      icon: FaUser, 
-      description: "Please provide your personal details.", 
+    {
+      title: "Professional Information",
+      icon: FaUser,
+      description: "Please provide your professional details.",
       fields: [
-        "fullName", "designation", "department", "workLocation", "employeeID", "contactNumber", 
-        "email", "linkedinProfile", "yearsOfExperienceInDRDO"
-      ] 
+        { label: "Full Name", name: "fullName", type: "text" },
+        { label: "Email Address", name: "emailAddress", type: "email" },
+        { label: "Contact Number", name: "contactNumber", type: "text" },
+        {
+          label: "Designation/Current Position",
+          name: "designation",
+          type: "dropdown",
+          options: ["Senior Scientist", "Principal Engineer", "Research Director"]
+        },
+        {
+          label: "Department/Division",
+          name: "department",
+          type: "dropdown",
+          options: ["Electronics", "Cybersecurity", "Mechanical Engineering", "Data Science"]
+        },
+        {
+          label: "Years of Experience in Current Role",
+          name: "yearsOfExperience",
+          type: "dropdown",
+          options: ["1-3 years", "4-7 years", "8+ years"]
+        },
+        {
+          label: "Upload Resume",
+          name: "resumeUpload",
+          type: "file"
+        }
+      ]
     },
-    { 
-      title: "Areas of Expertise", 
-      icon: FaGraduationCap, 
-      description: "Select the relevant areas that apply to you.", 
+    {
+      title: "Technical Expertise and Experience",
+      icon: FaGraduationCap,
+      description: "Select your core areas of expertise and technical skills.",
       fields: [
-        "aerospaceEngineering", "electronicsAndCommunication", "mechanicalEngineering", "computerScienceAndIT", 
-        "materialScience", "chemicalEngineering", "defenseResearch", "roboticsAndAutomation", "cybersecurity", 
-        "aiAndMachineLearning", "navalSystems", "radarSystems", "missileTechnology", "nuclearTechnology", "otherExpertise"
-      ] 
+        {
+          label: "Core Areas of Expertise",
+          name: "coreAreasOfExpertise",
+          type: "checkbox",
+          options: [
+            "Electronics Engineering",
+            "Cybersecurity",
+            "Mechanical Design",
+            "Data Science and AI",
+            "Software Development",
+            "Robotics",
+            "Others"
+          ]
+        },
+        {
+          label: "Technical Skills Proficiency",
+          name: "technicalSkillsProficiency",
+          type: "checkbox",
+          options: [
+            "Python",
+            "MATLAB",
+            "CAD Software",
+            "Embedded Systems",
+            "Machine Learning",
+            "Data Analysis Tools",
+            "Cybersecurity Protocols",
+            "Others"
+          ]
+        },
+        {
+          label: "Relevant Certifications",
+          name: "relevantCertifications",
+          type: "text"
+        },
+        {
+          label: "Interview Experience",
+          name: "interviewExperience",
+          type: "radio",
+          options: ["Yes", "No"]
+        },
+        {
+          label: "If Yes, in what capacity?",
+          name: "interviewCapacity",
+          type: "text"
+        },
+        {
+          label: "Publications and Research Contributions",
+          name: "publications",
+          type: "textarea"
+        }
+      ]
     },
-    { 
-      title: "Interviewing Experience", 
-      icon: FaBriefcase, 
-      description: "Share your interviewing experience.", 
+    {
+      title: "Availability & Preferences",
+      icon: FaBriefcase,
+      description: "Provide your availability and preferences for conducting interviews.",
       fields: [
-        "totalYearsOfInterviewingExperience", "previousExperienceAsPanelist", "typesOfInterviewsConducted", 
-        "numberOfInterviewsConducted"
-      ] 
-    },
-    { 
-      title: "Education & Certifications", 
-      icon: FaFileAlt, 
-      description: "Detail your education and certifications.", 
-      fields: [
-        "highestDegree", "relevantCertifications", "specializedTraining"
-      ] 
-    },
-    { 
-      title: "Key Skills & Competencies", 
-      icon: FaHeart, 
-      description: "Select the skills relevant to your expertise.", 
-      fields: [
-        "projectManagement", "researchAndDevelopment", "leadershipAndTeamManagement", "strategicPlanning", 
-        "problemSolving", "technicalWriting", "innovationAndDesignThinking", "otherSkills"
-      ] 
-    },
-    { 
-      title: "Availability", 
-      icon: FaInfoCircle, 
-      description: "Provide your availability for conducting interviews.", 
-      fields: [
-        "preferredDays", "preferredTimeSlots", "willingnessToTravel"
-      ] 
-    },
-    { 
-      title: "Security Clearance", 
-      icon: FaInfoCircle, 
-      description: "Indicate your security clearance status.", 
-      fields: [
-        "hasSecurityClearance", "levelOfClearance"
-      ] 
-    },
-    { 
-      title: "Languages Spoken", 
-      icon: FaInfoCircle, 
-      description: "Specify the languages you speak.", 
-      fields: [
-        "primaryLanguage", "otherLanguages"
-      ] 
-    },
-    { 
-      title: "Preferences & Matching Criteria", 
-      icon: FaInfoCircle, 
-      description: "Provide your preferences and matching criteria.", 
-      fields: [
-        "preferredTypesOfPosts", "preferenceForIntervieweeSkillLevel", "additionalMatchingCriteria"
-      ] 
-    },
-    { 
-      title: "Additional Information", 
-      icon: FaFileAlt, 
-      description: "Provide any additional information.", 
-      fields: [
-        "professionalAchievements", "publications", "contributionsToDRDOProjects", "additionalNotes"
-      ] 
-    },
-    { 
-      title: "Agreement & Consent", 
-      icon: FaInfoCircle, 
-      description: "Read and agree to the terms.", 
-      fields: [
-        "agreementConsent", "profileConsent"
-      ] 
+        {
+          label: "Preferred Time Slots for Conducting Interviews",
+          name: "preferredTimeSlots",
+          type: "dropdown",
+          options: ["Morning (9 AM - 12 PM)", "Afternoon (1 PM - 4 PM)", "Evening (5 PM - 8 PM)"]
+        },
+        {
+          label: "Preferred Interview Format",
+          name: "preferredInterviewFormat",
+          type: "radio",
+          options: ["Technical Round", "HR Round", "Coding/Practical Round", "Panel Discussion"]
+        },
+        {
+          label: "Preferred Interview Mode",
+          name: "preferredInterviewMode",
+          type: "radio",
+          options: ["Online", "In-person", "Hybrid"]
+        },
+        {
+          label: "Additional Notes/Preferences",
+          name: "additionalNotes",
+          type: "textarea"
+        }
+      ]
     }
   ];
 
@@ -117,9 +145,13 @@ const GetStartedExpertForm = () => {
     }));
   };
 
+  const handleFileUpload = (e) => {
+    setResumeFile(e.target.files[0]);
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    console.log('Form submitted:', formData, resumeFile);
   };
 
   const nextPage = () => {
@@ -138,139 +170,190 @@ const GetStartedExpertForm = () => {
     setCurrentPage(index);
   };
 
-  const capitalizeLabel = (label) => {
-    return label
-      .split(/(?=[A-Z])/)
-      .join(" ")
-      .replace(/^\w/, (c) => c.toUpperCase());
-  };
-
   const renderField = (field) => {
-    const label = capitalizeLabel(field);
-    
-    if (pages[currentPage].title === "Areas of Expertise" || pages[currentPage].title === "Key Skills & Competencies") {
-      return (
-        <div key={field} className="mb-4">
-          <label className="inline-flex items-center">
+    switch (field.type) {
+      case 'text':
+      case 'email':
+        return (
+          <div key={field.name} className="mb-6">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
             <input
-              type="checkbox"
-              name={field}
-              checked={formData[field] || false}
+              className="shadow appearance-none border-2 border-indigo-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              type={field.type}
+              name={field.name}
+              value={formData[field.name] || ""}
               onChange={handleInputChange}
-              className="form-checkbox text-indigo-600 transition duration-150 ease-in-out"
             />
-            <span className="ml-2">{label}</span>
-          </label>
-        </div>
-      );
-    } else {
-      return (
-        <div key={field} className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            {label}
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-indigo-500"
-            type="text"
-            name={field}
-            value={formData[field] || ""}
-            onChange={handleInputChange}
-          />
-        </div>
-      );
+          </div>
+        );
+      case 'dropdown':
+        return (
+          <div key={field.name} className="mb-6">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
+            <select
+              className="shadow appearance-none border-2 border-indigo-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              name={field.name}
+              value={formData[field.name] || ""}
+              onChange={handleInputChange}
+            >
+              <option value="">Select an option</option>
+              {field.options.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        );
+      case 'checkbox':
+        return (
+          <div key={field.name} className="mb-4">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
+            {field.options.map((option, index) => (
+              <div key={index} className="inline-flex items-center mr-4 mb-2">
+                <input
+                  type="checkbox"
+                  name={option}
+                  checked={formData[option] || false}
+                  onChange={handleInputChange}
+                  className="form-checkbox text-indigo-600 transition duration-150 ease-in-out border-indigo-300"
+                />
+                <span className="ml-2 text-gray-700">{option}</span>
+              </div>
+            ))}
+          </div>
+        );
+      case 'radio':
+        return (
+          <div key={field.name} className="mb-4">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
+            {field.options.map((option, index) => (
+              <div key={index} className="inline-flex items-center mr-4 mb-2">
+                <input
+                  type="radio"
+                  name={field.name}
+                  value={option}
+                  checked={formData[field.name] === option}
+                  onChange={handleInputChange}
+                  className="form-radio text-indigo-600 transition duration-150 ease-in-out border-indigo-300"
+                />
+                <span className="ml-2 text-gray-700">{option}</span>
+              </div>
+            ))}
+          </div>
+        );
+      case 'textarea':
+        return (
+          <div key={field.name} className="mb-6">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
+            <textarea
+              className="shadow appearance-none border-2 border-indigo-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              name={field.name}
+              value={formData[field.name] || ""}
+              onChange={handleInputChange}
+              rows="4"
+            />
+          </div>
+        );
+      case 'file':
+        return (
+          <div key={field.name} className="mb-6">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
+            <div
+              className="border-2 border-dashed border-indigo-300 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-500 transition-colors duration-300"
+              onDrop={(e) => {
+                e.preventDefault();
+                handleFileUpload(e);
+              }}
+              onDragOver={(e) => e.preventDefault()}
+            >
+              <p className="text-indigo-600">
+                Drag & drop your resume here, or click to select a file
+              </p>
+              <input
+                className="hidden"
+                type="file"
+                name={field.name}
+                onChange={handleFileUpload}
+              />
+            </div>
+            {resumeFile && (
+              <p className="mt-2 text-green-600">
+                Uploaded: {resumeFile.name}
+              </p>
+            )}
+          </div>
+        );
+      default:
+        return null;
     }
   };
 
-  const IconComponent = pages[currentPage].icon;
-
   return (
-    <div className="min-h-screen flex ">
-      {/* Sidebar */}
-      <div className="w-1/4 bg-gray-100 p-4 mt-20 border-r border-gray-200">
-        <ul className="space-y-4">
-          {pages.map((page, index) => (
-            <li 
-              key={index} 
-              className={`flex items-center p-2 cursor-pointer rounded-lg ${
-                currentPage === index ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'
-              }`}
-              onClick={() => jumpToPage(index)}
-            >
-              <page.icon className="mr-2" />
-              <span>{page.title}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Form Content */}
-      <div className="flex-1 flex items-center justify-center px-4 py-10">
-        <animated.div style={fadeInScale} className="bg-white shadow-2xl mt-24 rounded-lg p-8 max-w-2xl w-full border border-gray-200 relative">
-          {/* Progress Indicator */}
-          <div className="mb-4 top-4 left-4 text-sm text-gray-500">
-            Step {currentPage + 1} of {pages.length}
-          </div>
-
-          {/* Page Title with Icon */}
-          <div className="flex items-center mb-6">
-            <IconComponent className="text-3xl text-indigo-600 mr-3" />
-            <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-              {pages[currentPage].title}
-            </h2>
-          </div>
-
-          {/* Description */}
-          <p className="text-gray-500 mb-6">{pages[currentPage].description}</p>
-
-          {/* Form Fields */}
-          <form className="space-y-4" onSubmit={handleFormSubmit}>
-            {pages[currentPage].fields.map(renderField)}
-            <div className="flex justify-between mt-8">
-              <AnimatedButton onClick={prevPage} disabled={currentPage === 0}>
-                Previous
-              </AnimatedButton>
-              <AnimatedButton
-                primary
-                onClick={nextPage}
-                disabled={currentPage === pages.length - 1}
-                type="button"
-              >
-                {currentPage === pages.length - 1 ? "Submit" : "Next"}
-              </AnimatedButton>
-            </div>
-          </form>
+    <div className="max-w-xl mx-auto p-8 bg-white rounded-lg shadow-md mt-20 border-2 border-indigo-100">
+      <h2 className="text-2xl font-semibold mb-4 flex items-center text-indigo-700">
+        {React.createElement(pages[currentPage].icon, { className: 'mr-2 text-indigo-600' })}
+        {pages[currentPage].title}
+      </h2>
+      <p className="mb-6 text-indigo-600">
+        {pages[currentPage].description}
+      </p>
+      <form onSubmit={handleFormSubmit}>
+        <animated.div style={fadeInScale}>
+          {pages[currentPage].fields.map((field) => renderField(field))}
         </animated.div>
-      </div>
+        <div className="flex justify-between mt-6">
+          <button
+            type="button"
+            onClick={prevPage}
+            className={`bg-gray-300 text-indigo-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors duration-300 ${currentPage === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={currentPage === 0}
+          >
+            Previous
+          </button>
+          {currentPage < pages.length - 1 ? (
+            <button
+              type="button"
+              onClick={nextPage}
+              className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition-colors duration-300"
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors duration-300"
+            >
+              Submit
+            </button>
+          )}
+        </div>
+        <div className="flex justify-center mt-4">
+          {pages.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => jumpToPage(index)}
+              className={`w-4 h-4 mx-1 rounded-full transition-colors duration-300 ${
+                currentPage === index ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-indigo-400'
+              }`}
+            />
+          ))}
+        </div>
+      </form>
     </div>
-  );
-};
-
-const AnimatedButton = ({ children, primary, onClick, disabled, type }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const spring = useSpring({
-    transform: isHovered && !disabled ? 'scale(1.05)' : 'scale(1)',
-    boxShadow: isHovered && !disabled ? '0 12px 20px -5px rgba(0, 0, 0, 0.2)' : '0 6px 10px -5px rgba(0, 0, 0, 0.1)',
-    config: { tension: 300, friction: 20 },
-  });
-
-  const baseClasses = `py-2 px-5 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`;
-  const colorClasses = primary
-    ? 'text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
-    : 'text-indigo-600 bg-white border border-indigo-600 hover:bg-indigo-50';
-  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : '';
-
-  return (
-    <animated.button
-      style={spring}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
-      disabled={disabled}
-      type={type}
-      className={`${baseClasses} ${colorClasses} ${disabledClasses}`}
-    >
-      {children}
-    </animated.button>
   );
 };
 

@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSpring, animated, config } from 'react-spring';
-import Navbar from '../Components/Navbar';
-import Logo from '../assets/Logo.png'
+import Logo from '../assets/Logo.png';
+import { Link } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const data = useAuthContext();
+  const user = data.user;
+  console.log(user);
 
   const fadeIn = useSpring({
     opacity: 1,
@@ -29,34 +33,39 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      {/* Navbar */}
-      <Navbar/>
       {/* Main Content */}
       <main className="pt-20">
         {/* Hero Section */}
         <animated.section style={fadeIn} className="bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex items-center mb-6 mx-auto justify-center">
-            <animated.h1
-              style={staggeredFadeIn(200)}
-              className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600"
-            >
-              Welcome to
-            </animated.h1>
-            <animated.h1
-             style={staggeredFadeIn(200)}
-            >
-            <img src={Logo} alt="img" className="w-40 object-scale-down ml-2" />
-            </animated.h1>
-          </div>
+            <div className="flex items-center mb-6 mx-auto justify-center">
+              <animated.h1
+                style={staggeredFadeIn(200)}
+                className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600"
+              >
+                Welcome to
+              </animated.h1>
+              <animated.h1 style={staggeredFadeIn(200)}>
+                <img src={Logo} alt="img" className="w-40 object-scale-down ml-2" />
+              </animated.h1>
+            </div>
 
             <animated.p style={staggeredFadeIn(400)} className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
               We provide top-notch solutions for all your business needs. Join us to experience the best services.
             </animated.p>
-            <animated.div style={staggeredFadeIn(600)}>
-              <AnimatedButton primary large>
-                Get Started
-              </AnimatedButton>
+            <animated.div style={staggeredFadeIn(600)} className="flex justify-center space-x-4">
+              <Link to={user ? (user.role === "Candidate" ? "/getstartedcandidate" : "/getstartedexpert") : "/auth/login"}>
+                <AnimatedButton primary large>
+                  Get Started
+                </AnimatedButton>
+              </Link>
+              {user && user.role === "Expert" && (
+                <Link to="/expertdashboard">
+                  <AnimatedButton primary large>
+                    Dashboard
+                  </AnimatedButton>
+                </Link>
+              )}
             </animated.div>
           </div>
         </animated.section>
@@ -83,7 +92,7 @@ const Home = () => {
               />
               <AboutCard
                 title="Our Values"
-                description="Integrity,loremjfjoa fadf ad badbb un faisb bfasfabnf abf aisbf asbfasfbaf asfbas fabsfas bfaos dfbas fasb fbasa dfb adsb fidsf baib faebwfeb fabfba dfb innovation, and excellence are at the core of everything we do."
+                description="Integrity, innovation, and excellence are at the core of everything we do."
                 delay={600}
               />
             </div>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { AlertCircle, Briefcase, Calendar, File, Globe, Mail, MapPin, Phone, Shield, User } from 'lucide-react';
-import Navbar from '../Components/Navbar';
 import Avatar from '../assets/profile.svg';
 
 const ProfilePage = () => {
@@ -106,7 +105,6 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <Navbar />
       <div className="flex pt-20">
         <animated.aside style={slideUp} className="w-64 bg-white shadow-lg">
           <div className="p-6 bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
