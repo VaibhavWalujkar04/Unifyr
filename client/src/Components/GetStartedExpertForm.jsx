@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { FaUser, FaGraduationCap, FaBriefcase } from 'react-icons/fa';
+import TagInput from './TagInput';  // Import the TagInput component
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useAuthContext } from '../hooks/useAuthContext';
+
 
 const GetStartedExpertForm = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [formData, setFormData] = useState({});
   const [resumeFile, setResumeFile] = useState(null);
+
+  const [expertiseTags, setExpertiseTags] = useState([]);  // State for Core Areas of Expertise
+  const [skillsTags, setSkillsTags] = useState([]);  // State for Technical Skills Proficiency
+  const {user} = useAuthContext();
 
   const fadeInScale = useSpring({
     opacity: 1,
@@ -13,6 +22,8 @@ const GetStartedExpertForm = () => {
     from: { opacity: 0, transform: 'scale(0.95)' },
     config: { tension: 100, friction: 10, duration: 300 }
   });
+
+  const navigate = useNavigate();
 
   const pages = [
     {
@@ -38,8 +49,7 @@ const GetStartedExpertForm = () => {
         {
           label: "Years of Experience in Current Role",
           name: "yearsOfExperience",
-          type: "dropdown",
-          options: ["1-3 years", "4-7 years", "8+ years"]
+          type: "number"  // Changed from 'dropdown' to 'number'
         },
         {
           label: "Upload Resume",
@@ -56,31 +66,14 @@ const GetStartedExpertForm = () => {
         {
           label: "Core Areas of Expertise",
           name: "coreAreasOfExpertise",
-          type: "checkbox",
-          options: [
-            "Electronics Engineering",
-            "Cybersecurity",
-            "Mechanical Design",
-            "Data Science and AI",
-            "Software Development",
-            "Robotics",
-            "Others"
-          ]
+          type: "text",
         },
         {
           label: "Technical Skills Proficiency",
           name: "technicalSkillsProficiency",
-          type: "checkbox",
-          options: [
-            "Python",
-            "MATLAB",
-            "CAD Software",
-            "Embedded Systems",
-            "Machine Learning",
-            "Data Analysis Tools",
-            "Cybersecurity Protocols",
-            "Others"
-          ]
+          type: "tagInput",
+          tags: skillsTags,
+          setTags: setSkillsTags,
         },
         {
           label: "Relevant Certifications",
@@ -149,12 +142,38 @@ const GetStartedExpertForm = () => {
     setResumeFile(e.target.files[0]);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData, resumeFile);
+
+    // Include expertiseTags and skillsTags in formData before submission
+    const finalFormData = {
+      ...formData,
+      technicalSkillsProficiency: skillsTags,
+      skills: skillsTags.join(', '),
+      resumeFile,
+      user: user.userId
+    };
+    console.log(finalFormData);
+    try {
+      // Send the form data to the backend
+      const response = await axios.post('/api/experts', finalFormData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': user.token,
+        },
+      });
+
+      console.log('Form submitted:', response.data);
+      alert('Form Successfully Submitted');
+      navigate('/');  // Redirect to the home page or any other route
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Error submitting form. Please try again.');
+    }
   };
 
-  const nextPage = () => {
+  const nextPage = (e) => {
+    e.preventDefault();
     if (currentPage < pages.length - 1) {
       setCurrentPage(currentPage + 1);
     }
@@ -174,6 +193,7 @@ const GetStartedExpertForm = () => {
     switch (field.type) {
       case 'text':
       case 'email':
+      case 'number':  // Handle number input
         return (
           <div key={field.name} className="mb-6">
             <label className="block text-indigo-700 text-sm font-bold mb-2">
@@ -207,26 +227,6 @@ const GetStartedExpertForm = () => {
                 </option>
               ))}
             </select>
-          </div>
-        );
-      case 'checkbox':
-        return (
-          <div key={field.name} className="mb-4">
-            <label className="block text-indigo-700 text-sm font-bold mb-2">
-              {field.label}
-            </label>
-            {field.options.map((option, index) => (
-              <div key={index} className="inline-flex items-center mr-4 mb-2">
-                <input
-                  type="checkbox"
-                  name={option}
-                  checked={formData[option] || false}
-                  onChange={handleInputChange}
-                  className="form-checkbox text-indigo-600 transition duration-150 ease-in-out border-indigo-300"
-                />
-                <span className="ml-2 text-gray-700">{option}</span>
-              </div>
-            ))}
           </div>
         );
       case 'radio':
@@ -272,28 +272,31 @@ const GetStartedExpertForm = () => {
               {field.label}
             </label>
             <div
-              className="border-2 border-dashed border-indigo-300 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-500 transition-colors duration-300"
-              onDrop={(e) => {
-                e.preventDefault();
-                handleFileUpload(e);
-              }}
-              onDragOver={(e) => e.preventDefault()}
+              className="border-dashed border-2 border-indigo-300 text-center p-4 cursor-pointer"
+              onClick={() => document.getElementById(field.name).click()}
             >
-              <p className="text-indigo-600">
-                Drag & drop your resume here, or click to select a file
-              </p>
               <input
+                id={field.name}
                 className="hidden"
                 type="file"
                 name={field.name}
                 onChange={handleFileUpload}
               />
+              {resumeFile ? (
+                <span>{resumeFile.name}</span>
+              ) : (
+                <span>Drag and drop a file here or click to upload</span>
+              )}
             </div>
-            {resumeFile && (
-              <p className="mt-2 text-green-600">
-                Uploaded: {resumeFile.name}
-              </p>
-            )}
+          </div>
+        );
+      case 'tagInput':  // Handle tag input using the TagInput component
+        return (
+          <div key={field.name} className="mb-6">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
+            <TagInput tags={field.tags} setTags={field.setTags} />
           </div>
         );
       default:
@@ -302,58 +305,60 @@ const GetStartedExpertForm = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-8 bg-white rounded-lg shadow-md mt-20 border-2 border-indigo-100">
-      <h2 className="text-2xl font-semibold mb-4 flex items-center text-indigo-700">
-        {React.createElement(pages[currentPage].icon, { className: 'mr-2 text-indigo-600' })}
-        {pages[currentPage].title}
-      </h2>
-      <p className="mb-6 text-indigo-600">
-        {pages[currentPage].description}
-      </p>
-      <form onSubmit={handleFormSubmit}>
-        <animated.div style={fadeInScale}>
-          {pages[currentPage].fields.map((field) => renderField(field))}
-        </animated.div>
-        <div className="flex justify-between mt-6">
-          <button
-            type="button"
-            onClick={prevPage}
-            className={`bg-gray-300 text-indigo-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors duration-300 ${currentPage === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={currentPage === 0}
-          >
-            Previous
-          </button>
-          {currentPage < pages.length - 1 ? (
-            <button
-              type="button"
-              onClick={nextPage}
-              className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition-colors duration-300"
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors duration-300"
-            >
-              Submit
-            </button>
-          )}
+    <animated.div style={fadeInScale}>
+      <div className="max-w-3xl mx-auto mt-20 bg-white mt-20 shadow-md rounded-lg p-8 mb-4">
+        <div className="mb-8">
+          <div className="flex justify-center mb-4">
+            {pages.map((page, index) => (
+              <button
+                key={index}
+                onClick={() => jumpToPage(index)}
+                className={`flex items-center text-indigo-600 font-bold mx-2 ${currentPage === index ? 'text-xl' : 'text-lg'}`}
+              >
+                <page.icon className="mr-2" />
+                {page.title}
+              </button>
+            ))}
+          </div>
+          <h2 className="text-2xl font-bold text-center text-indigo-700 mb-2">
+            {pages[currentPage].title}
+          </h2>
+          <p className="text-center text-gray-500 mb-4">
+            {pages[currentPage].description}
+          </p>
         </div>
-        <div className="flex justify-center mt-4">
-          {pages.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => jumpToPage(index)}
-              className={`w-4 h-4 mx-1 rounded-full transition-colors duration-300 ${
-                currentPage === index ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-indigo-400'
-              }`}
-            />
-          ))}
-        </div>
-      </form>
-    </div>
+
+        <form onSubmit={handleFormSubmit}>
+          {pages[currentPage].fields.map(renderField)}
+
+          <div className="flex justify-between mt-8">
+              <button
+                type="button"
+                onClick={prevPage}
+                className={`px-4 py-2 rounded ${currentPage === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-500 text-white hover:bg-indigo-600'}`}
+              >
+                Previous
+              </button>
+            {currentPage < pages.length - 1 ? (
+              <button
+                type="button"
+                onClick={nextPage}
+                className="bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Next
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Submit
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+    </animated.div>
   );
 };
 

@@ -1,11 +1,38 @@
 import React, { useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { FaUser, FaGraduationCap, FaBriefcase } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import TagInput from './TagInput';  // Ensure the correct path
+import { useAuthContext } from '../hooks/useAuthContext';
+import axios from 'axios';
 
 const GetStartedCandidateForm = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    fullName: '',
+    emailAddress: '',
+    contactNumber: '',
+    positionAppliedFor: '',
+    employmentStatus: '',
+    linkedInProfile: '',
+    highestDegree: '',
+    fieldOfStudy: '',
+    universityInstitution: '',
+    technicalSkills: [],
+    yearsOfExperience: '',
+    certificationsFile: null,
+    academicProjects: '',
+    workExperience: '',
+    keyAchievements: '',
+    preferredInterviewMode: '',
+    preferredInterviewTime: '',
+    additionalInformation: ''
+  });
   const [certificationsFile, setCertificationsFile] = useState(null);
+  const [skillsTags, setSkillsTags] = useState([]);
+  const [yearsOfExperience, setYearsOfExperience] = useState('');
+  const {user} = useAuthContext();
+  const navigate = useNavigate();
 
   const fadeInScale = useSpring({
     opacity: 1,
@@ -54,17 +81,17 @@ const GetStartedCandidateForm = () => {
         {
           label: "Technical Skills",
           name: "technicalSkills",
-          type: "checkbox",
-          options: [
-            "Programming Languages (e.g., Python, C++, Java)",
-            "CAD Tools (e.g., SolidWorks, AutoCAD)",
-            "Data Analysis (e.g., R, MATLAB)",
-            "Cybersecurity Tools (e.g., Wireshark, Metasploit)",
-            "Others"
-          ]
+          type: "tagInput",
+          tags: skillsTags,
+          setTags: setSkillsTags,
         },
         {
-          label: "Certifications (Upload if any)",
+          label: "Years of Experience",
+          name: "yearsOfExperience",
+          type: "number"
+        },
+        {
+          label: "Upload Resume",
           name: "certifications",
           type: "file"
         },
@@ -111,12 +138,36 @@ const GetStartedCandidateForm = () => {
     setCertificationsFile(e.target.files[0]);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData, certificationsFile);
+    const finalData = {
+      ...formData,
+      technicalSkills: skillsTags.join(', '),
+      yearsOfExperience,
+      certificationsFile,
+      user:user.userId
+    };
+    console.log(finalData);
+    try {
+      // Send the form data to the backend
+      const response = await axios.post('/api/candidates', finalData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': user.token,
+        },
+      });
+
+      console.log('Form submitted:', response.data);
+      alert('Form Successfully Submitted');
+      navigate('/');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Error submitting form. Please try again.');
+    }
   };
 
-  const nextPage = () => {
+  const nextPage = (e) => {
+    e.preventDefault();
     if (currentPage < pages.length - 1) {
       setCurrentPage(currentPage + 1);
     }
@@ -171,26 +222,6 @@ const GetStartedCandidateForm = () => {
             </select>
           </div>
         );
-      case 'checkbox':
-        return (
-          <div key={field.name} className="mb-4">
-            <label className="block text-indigo-700 text-sm font-bold mb-2">
-              {field.label}
-            </label>
-            {field.options.map((option, index) => (
-              <div key={index} className="inline-flex items-center mr-4 mb-2">
-                <input
-                  type="checkbox"
-                  name={option}
-                  checked={formData[option] || false}
-                  onChange={handleInputChange}
-                  className="form-checkbox text-indigo-600 transition duration-150 ease-in-out border-indigo-300"
-                />
-                <span className="ml-2 text-gray-700">{option}</span>
-              </div>
-            ))}
-          </div>
-        );
       case 'radio':
         return (
           <div key={field.name} className="mb-4">
@@ -224,7 +255,7 @@ const GetStartedCandidateForm = () => {
               value={formData[field.name] || ""}
               onChange={handleInputChange}
               rows="4"
-            />
+            ></textarea>
           </div>
         );
       case 'file':
@@ -233,30 +264,37 @@ const GetStartedCandidateForm = () => {
             <label className="block text-indigo-700 text-sm font-bold mb-2">
               {field.label}
             </label>
-            <div
-              className="border-2 border-dashed border-indigo-300 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-500 transition-colors duration-300"
-              onDrop={(e) => {
-                e.preventDefault();
-                setCertificationsFile(e.dataTransfer.files[0]);
-              }}
-              onDragOver={(e) => e.preventDefault()}
-            >
-              <input
-                type="file"
-                name={field.name}
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-              {certificationsFile ? (
-                <p className="text-sm text-gray-600">
-                  {certificationsFile.name}
-                </p>
-              ) : (
-                <p className="text-sm text-indigo-600">
-                  Drag and drop a file here or click to select
-                </p>
-              )}
-            </div>
+            <input
+              className="shadow appearance-none border-2 border-indigo-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              type="file"
+              name={field.name}
+              onChange={handleFileUpload}
+            />
+          </div>
+        );
+      case 'tagInput':
+        return (
+          <div key={field.name} className="mb-6">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
+            <TagInput tags={field.tags} setTags={field.setTags} />
+          </div>
+        );
+      case 'number':
+        return (
+          <div key={field.name} className="mb-6">
+            <label className="block text-indigo-700 text-sm font-bold mb-2">
+              {field.label}
+            </label>
+            <input
+              className="shadow appearance-none border-2 border-indigo-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              type="number"
+              name={field.name}
+              value={yearsOfExperience}
+              onChange={(e) => setYearsOfExperience(e.target.value)}
+              min="0"
+            />
           </div>
         );
       default:
@@ -265,67 +303,54 @@ const GetStartedCandidateForm = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-24">
-      <form
-        onSubmit={handleFormSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 border-2 border-indigo-200"
-      >
-        <div className="flex justify-center mb-8">
-          {pages.map((page, index) => (
-            <div
-              key={index}
-              className={`text-center cursor-pointer px-4 ${
-                currentPage === index
-                  ? "text-indigo-600 font-bold"
-                  : "text-indigo-400"
-              }`}
-              onClick={() => jumpToPage(index)}
-            >
-              <page.icon className="mx-auto text-2xl" />
-              <span>{page.title}</span>
-            </div>
-          ))}
-        </div>
+    <animated.div style={fadeInScale} className="max-w-3xl mx-auto mt-20 p-8 bg-white rounded-lg shadow-md">
+      <div className="flex items-center mb-6">
+        {pages.map((page, index) => (
+          <div
+            key={index}
+            className={`flex items-center cursor-pointer ${index === currentPage ? 'text-indigo-500' : 'text-gray-500'}`}
+            onClick={() => jumpToPage(index)}
+          >
+            <page.icon className="mr-2" />
+            <span className="font-semibold">{page.title}</span>
+            {index < pages.length - 1 && (
+              <span className="mx-4 text-gray-400">|</span>
+            )}
+          </div>
+        ))}
+      </div>
 
-        <animated.div style={fadeInScale}>
-          <h2 className="text-xl font-semibold text-indigo-700 mb-4 text-center">
-            {pages[currentPage].title}
-          </h2>
-          <p className="text-gray-600 mb-8 text-center">
-            {pages[currentPage].description}
-          </p>
-          {pages[currentPage].fields.map((field) => renderField(field))}
-        </animated.div>
+      <form onSubmit={handleFormSubmit}>
+        {pages[currentPage].fields.map(renderField)}
 
         <div className="flex justify-between mt-8">
-          {currentPage > 0 && (
+          <button
+            type="button"
+            onClick={prevPage}
+            disabled={currentPage === 0}
+            className={`px-4 py-2 rounded ${currentPage === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-500 text-white hover:bg-indigo-600'}`}
+          >
+            Previous
+          </button>
+          {currentPage === 2 ? (
             <button
-              type="button"
-              onClick={prevPage}
-              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
             >
-              Previous
-            </button>
-          )}
-          {currentPage < pages.length - 1 ? (
-            <button
-              type="button"
-              onClick={nextPage}
-              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-auto"
-            >
-              Next
+              Submit
             </button>
           ) : (
             <button
-              type="submit"
-              className="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-auto"
+              type="button"
+              onClick={nextPage}
+              className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
             >
-              Submit
+              Next
             </button>
           )}
         </div>
       </form>
-    </div>
+    </animated.div>
   );
 };
 

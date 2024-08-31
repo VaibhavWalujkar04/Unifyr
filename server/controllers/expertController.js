@@ -1,18 +1,23 @@
-// backend/controllers/expertController.js
 const Expert = require('../models/Expert');
-const { generateVectors } = require('../utils/vector_utils');
 const Candidate = require('../models/Candidate');
 
-
 exports.createExpertProfile = async (req, res) => {
-  const { basicInfo } = req.body;
+  const { fullName, skills, coreAreasOfExpertise, yearsOfExperience, user } = req.body;
 
   try {
-    const { tfidfVector, bertEmbedding, combinedVector } = await generateVectors(basicInfo);
-    const expert = new Expert({ user: req.user.userId, basicInfo, tfidfVector, bertEmbedding, combinedVector });
+    const expert = new Expert({
+      user,
+      name: fullName,
+      skills,
+      subject: coreAreasOfExpertise,
+      experience: yearsOfExperience
+    });
+
     await expert.save();
-    res.status(201).json({ message: 'Expert profile created successfully' });
+
+    res.status(201).json({ message: 'Expert profile created successfully', expert });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
