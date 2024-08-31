@@ -62,3 +62,17 @@ exports.getCandidatesAssignedToExpert = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getExpertById = async (req, res) => {
+  const { expertId } = req.params;
+
+  try {
+    const expert = await Expert.findById(expertId).populate('assignedCandidates');
+    if (!expert) {
+      return res.status(404).json({ message: 'Expert not found' });
+    }
+    res.status(200).json(expert);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

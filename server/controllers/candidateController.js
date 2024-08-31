@@ -14,3 +14,17 @@ exports.createCandidateProfile = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getCandidateById = async (req, res) => {
+  const { candidateId } = req.params;
+
+  try {
+    const candidate = await Candidate.findById(candidateId).populate('assignedTo');
+    if (!candidate) {
+      return res.status(404).json({ message: 'Candidate not found' });
+    }
+    res.status(200).json(candidate);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

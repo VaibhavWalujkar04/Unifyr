@@ -1,4 +1,3 @@
-// backend/models/Candidate.js
 const mongoose = require('mongoose');
 
 const CandidateSchema = new mongoose.Schema({
@@ -7,7 +6,7 @@ const CandidateSchema = new mongoose.Schema({
   tfidfVector: { type: [Number], required: true },
   bertEmbedding: { type: [Number], required: true },
   combinedVector: { type: [Number], required: true },
-  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Expert', default: null }, // New field for assigned expert
+  assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Expert' }], // Changed to array of experts
 });
 
 module.exports = mongoose.model('Candidate', CandidateSchema);
