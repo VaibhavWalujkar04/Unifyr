@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { PlusCircle, User, FileText, BarChart2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaUser, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const localizer = momentLocalizer(moment);
@@ -99,40 +99,58 @@ const ExpertDashboard = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: animate ? 1 : 0, y: animate ? 0 : 20 }}
       transition={{ duration: 0.5 }}
-      className="bg-white p-6 rounded-xl shadow-lg border border-gray-300"
+      className="bg-white p-6 rounded-xl shadow-md border border-gray-200"
     >
       <div className="flex items-center mb-6">
         <img
           src="https://via.placeholder.com/100"
           alt="User Avatar"
-          className="w-24 h-24 rounded-full mr-4"
+          className="w-24 h-24 rounded-full mr-4 border-4 border-gray-300 shadow-md"
         />
         <div>
           <h2 className="text-3xl font-bold text-gray-800">{dummyProfileData.fullName}</h2>
           <p className="text-gray-600">{dummyProfileData.designation} - {dummyProfileData.department}</p>
         </div>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {Object.entries(dummyProfileData).map(([key, value], index) => (
           key !== 'fullName' && key !== 'designation' && key !== 'department' && (
-            <div key={index} className="border rounded-lg p-4 bg-gray-50 shadow-sm">
+            <motion.div 
+              key={index} 
+              className="border rounded-lg p-4 bg-gray-50 shadow-sm hover:bg-gray-100 cursor-pointer"
+              onClick={() => toggleSection(key)}
+              initial={false}
+              animate={{
+                backgroundColor: expandedSections[key] ? "#E5E7EB" : "#F9FAFB"
+              }}
+              transition={{ duration: 0.3 }}
+            >
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-gray-700 capitalize">
                   {key.replace(/([A-Z])/g, ' $1')}
                 </h3>
-                <button
-                  onClick={() => toggleSection(key)}
+                <motion.button 
                   className="focus:outline-none"
+                  animate={{ rotate: expandedSections[key] ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {expandedSections[key] ? <FaChevronUp /> : <FaChevronDown />}
-                </button>
+                  <FaChevronDown />
+                </motion.button>
               </div>
-              {expandedSections[key] && (
-                <p className="mt-2 text-gray-600">
-                  {Array.isArray(value) ? value.join(', ') : value}
-                </p>
-              )}
-            </div>
+              <AnimatePresence>
+                {expandedSections[key] && (
+                  <motion.p 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeIn" }}
+                    className="mt-2 text-gray-600 overflow-hidden"
+                  >
+                    {Array.isArray(value) ? value.join(', ') : value}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </motion.div>
           )
         ))}
       </div>
@@ -147,7 +165,7 @@ const ExpertDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: animate ? 1 : 0, y: animate ? 0 : 20 }}
             transition={{ duration: 0.5 }}
-            className="bg-white p-6 rounded-xl shadow-lg"
+            className="bg-white p-6 rounded-xl shadow-md border border-gray-200"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Scheduled Interviews</h2>
             <Calendar
@@ -198,7 +216,7 @@ const ExpertDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: animate ? 1 : 0, y: animate ? 0 : 20 }}
             transition={{ duration: 0.5 }}
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-300"
+            className="bg-white p-6 rounded-xl shadow-md border border-gray-200"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Candidate Management</h2>
             <p>Candidate management functionality coming soon...</p>
@@ -210,9 +228,10 @@ const ExpertDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: animate ? 1 : 0, y: animate ? 0 : 20 }}
             transition={{ duration: 0.5 }}
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-300"
+            className="bg-white p-6 rounded-xl shadow-md border border-gray-200"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Resume Database</h2>
+           
             <p>Resume database functionality coming soon...</p>
           </motion.div>
         );
@@ -222,7 +241,7 @@ const ExpertDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: animate ? 1 : 0, y: animate ? 0 : 20 }}
             transition={{ duration: 0.5 }}
-            className="bg-white p-6 rounded-xl shadow-lg border border-gray-300"
+            className="bg-white p-6 rounded-xl shadow-md border border-gray-200"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Analytics Dashboard</h2>
             <p>Analytics functionality coming soon...</p>
@@ -235,49 +254,95 @@ const ExpertDashboard = () => {
     }
   };
 
-  return (
-    <div className="bg-gradient-to-br mt-20 from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg p-4">
-        <div className="flex flex-col space-y-4">
-          <button
-            onClick={() => setSelectedView("profile")}
-            className={`px-4 py-2 rounded-full text-gray-800 font-bold flex items-center gap-2 transition-transform transform hover:scale-105 ${selectedView === "profile" ? "bg-indigo-600 text-white shadow-lg" : "bg-gray-200"}`}
-          >
-            <FaUser size={20} /> Profile
-          </button>
-          <button
-            onClick={() => setSelectedView("calendar")}
-            className={`px-4 py-2 rounded-full text-gray-800 font-bold flex items-center gap-2 transition-transform transform hover:scale-105 ${selectedView === "calendar" ? "bg-indigo-600 text-white shadow-lg" : "bg-gray-200"}`}
-          >
-            <PlusCircle size={20} /> Calendar
-          </button>
-          <button
-            onClick={() => setSelectedView("candidates")}
-            className={`px-4 py-2 rounded-full text-gray-800 font-bold flex items-center gap-2 transition-transform transform hover:scale-105 ${selectedView === "candidates" ? "bg-indigo-600 text-white shadow-lg" : "bg-gray-200"}`}
-          >
-            <User size={20} /> Candidates
-          </button>
-          <button
-            onClick={() => setSelectedView("resumes")}
-            className={`px-4 py-2 rounded-full text-gray-800 font-bold flex items-center gap-2 transition-transform transform hover:scale-105 ${selectedView === "resumes" ? "bg-indigo-600 text-white shadow-lg" : "bg-gray-200"}`}
-          >
-            <FileText size={20} /> Resumes
-          </button>
-          <button
-            onClick={() => setSelectedView("analytics")}
-            className={`px-4 py-2 rounded-full text-gray-800 font-bold flex items-center gap-2 transition-transform transform hover:scale-105 ${selectedView === "analytics" ? "bg-indigo-600 text-white shadow-lg" : "bg-gray-200"}`}
-          >
-            <BarChart2 size={20} /> Analytics
-          </button>
-        </div>
-      </div>
+  const sidebarVariants = {
+    hidden: { x: -300 },
+    visible: { x: 0, transition: { type: "spring", stiffness: 100 } }
+  };
 
-      {/* Main Content */}
-      <div className="flex-1 p-10">
-        <h1 className="text-4xl font-bold text-white mb-10">Expert Dashboard</h1>
-        {renderView()}
-      </div>
+  const contentVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
+  };
+
+  return (
+    <div className="min-h-screen flex mt-20">
+      {/* Sidebar with moving gradient */}
+      <motion.div 
+        className="w-64 shadow-xl p-6 relative overflow-hidden"
+        initial="hidden"
+        animate="visible"
+        variants={sidebarVariants}
+      >
+        {/* Moving gradient background */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-purple-800 to-violet-400 animate-gradient-x"></div>
+        </div>
+        
+        {/* Sidebar content */}
+        <div className="relative z-10 flex flex-col space-y-6">
+          {[
+            { view: "profile", icon: FaUser, label: "Profile" },
+            { view: "calendar", icon: PlusCircle, label: "Calendar" },
+            { view: "candidates", icon: User, label: "Candidates" },
+            { view: "resumes", icon: FileText, label: "Resumes" },
+            { view: "analytics", icon: BarChart2, label: "Analytics" }
+          ].map(({ view, icon: Icon, label }) => (
+            <motion.div
+              key={view}
+              className="relative"
+            >
+              <motion.button
+                onClick={() => setSelectedView(view)}
+                className={`w-full px-4 py-3 rounded-xl font-bold flex items-center gap-3 transition-all duration-300 ${
+                  selectedView === view
+                    ? "text-black"
+                    : "text-white hover:bg-black hover:bg-opacity-10"
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Icon size={22} />
+                {label}
+              </motion.button>
+              {selectedView === view && (
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-green-400 via-green-600 to-green-200 rounded-xl -z-10"
+                  layoutId="sidebar-background"
+                  initial={false}
+                  animate={{ opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 100, damping: 30 }}
+                />
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Main Content with moving gradient */}
+      <motion.div 
+        className="flex-1 p-10 relative overflow-hidden"
+        initial="hidden"
+        animate="visible"
+        variants={contentVariants}
+      >
+        {/* Moving gradient background */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-300 via-gray-600 to-gray-400 animate-gradient-x"></div>
+        </div>
+        
+        {/* Main content */}
+        <div className="relative z-10">
+          <motion.h1 
+            className="text-4xl font-bold text-white mb-10"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+          >
+            Expert Dashboard
+          </motion.h1>
+          {renderView()}
+        </div>
+      </motion.div>
     </div>
   );
 };

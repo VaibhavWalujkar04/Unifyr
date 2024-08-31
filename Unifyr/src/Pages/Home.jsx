@@ -41,7 +41,7 @@ const Home = () => {
             <div className="flex items-center mb-6 mx-auto justify-center">
               <animated.h1
                 style={staggeredFadeIn(200)}
-                className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600"
+                className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 via-purple-600  to-blue-600 animate-gradient-x"
               >
                 Welcome to
               </animated.h1>
@@ -133,7 +133,7 @@ const AnimatedButton = ({ children, primary, large, fullWidth }) => {
   const baseClasses = `py-2 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${fullWidth ? 'w-full' : ''}`;
   const sizeClasses = large ? 'py-3 px-8 text-lg' : 'py-2 px-4 text-sm';
   const colorClasses = primary
-    ? 'text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
+    ? 'text-white  bg-gradient-to-br from-indigo-600 via-purple-600  to-blue-600 animate-gradient-x hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700'
     : 'text-indigo-600 bg-white border border-indigo-600 hover:bg-indigo-50';
 
   return (

@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "antd": "^5.20.3",
-    "framer-motion": "^11.3.30",
+    "framer-motion": "^11.3.31",
     "link": "^2.1.1",
     "lucide-react": "^0.436.0",
     "moment": "^2.30.1",
