@@ -128,5 +128,5 @@ python app.py
 - [Arnav Phad](https://github.com/Arnav0704): adphad123@gmail.com
 - [Puru Zingare](https://github.com/puruz14):  puruzingare14@gmail.com
 - [Tanmay Sharma](https://github.com/tanmay15s): sharma.tanmay.b10@gmail.com
-- [Vaibhav Walujkar](https://github.com/VaibhavWalujkar04): vaibhavwalujkar04@gmail.com
+- [Vaibhav Walujkar](https://github.com/VaibhavWalujkar04): vaibhav.walujkar@gmail.com
 - [Nisarga Kale](https://github.com/nisargakale2107): nisarga.kale2017@gmail.com
